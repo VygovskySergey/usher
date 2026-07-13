@@ -1,0 +1,8 @@
+# Domains that should open in your WORK Chrome profile. One per line.
+# Subdomains match automatically (example.com also matches mail.example.com).
+# Lines starting with # are ignored. Edits apply immediately, no rebuild.
+#
+# Add your own below (examples, all disabled by default):
+#mycompany.com
+#github.com
+#atlassian.net

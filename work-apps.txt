@@ -1,0 +1,7 @@
+# Bundle IDs of apps whose links ALWAYS open in your WORK profile, regardless
+# of the URL. Find one with:  osascript -e 'id of app "AppName"'
+# Edits apply immediately, no rebuild.
+
+com.tinyspeck.slackmacgap
+#com.microsoft.teams2
+#com.hnc.Discord

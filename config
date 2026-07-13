@@ -1,0 +1,12 @@
+# Chrome profile directory names. Find yours at chrome://version -> "Profile Path"
+# and use the LAST path component (e.g. "Default", "Profile 1", "Profile 2").
+# Tip: run ./list-profiles.sh to list your profiles.
+# Edits apply immediately, no rebuild.
+#
+#   work_profile      profile that work / Slack links open in
+#   personal_profile  profile that everything else opens in
+#   chrome_path       optional; auto-detected if omitted or not found
+
+work_profile=Default
+personal_profile=Profile 1
+#chrome_path=/Applications/Google Chrome.app/Contents/MacOS/Google Chrome
