@@ -62,10 +62,33 @@ func resolveChrome(_ configured: String) -> String? {
     return nil
 }
 
-func openInBrowser(profile: String, url: String, browserPath: String) {
+func userDataDir(forBrowser path: String) -> String? {
+    let appSupport = FileManager.default.homeDirectoryForCurrentUser.path + "/Library/Application Support"
+    switch true {
+    case path.contains("Google Chrome Beta"): return appSupport + "/Google/Chrome Beta"
+    case path.contains("Google Chrome Canary"): return appSupport + "/Google/Chrome Canary"
+    case path.contains("Google Chrome"): return appSupport + "/Google/Chrome"
+    case path.contains("Chromium"): return appSupport + "/Chromium"
+    case path.contains("Brave Browser"): return appSupport + "/BraveSoftware/Brave-Browser"
+    default: return nil
+    }
+}
+
+// Exact, case-sensitive match against real on-disk profile directories, so a
+// wrong-case or misspelled profile name can never trick the browser into
+// silently creating a new profile.
+func profileExists(_ profile: String, inUserDataDir dir: String) -> Bool {
+    guard let entries = try? FileManager.default.contentsOfDirectory(atPath: dir) else { return false }
+    return entries.contains(profile)
+}
+
+func openInBrowser(profile: String?, url: String, browserPath: String) {
     let proc = Process()
     proc.executableURL = URL(fileURLWithPath: browserPath)
-    proc.arguments = ["--profile-directory=\(profile)", url]
+    var args: [String] = []
+    if let profile { args.append("--profile-directory=\(profile)") }
+    args.append(url)
+    proc.arguments = args
     do {
         try proc.run()
     } catch {
@@ -130,7 +153,12 @@ final class Router: NSObject, NSApplicationDelegate {
             openInSafari(url)
             return
         }
-        openInBrowser(profile: profile, url: url, browserPath: chrome)
+        var effectiveProfile: String? = profile
+        if let dir = userDataDir(forBrowser: chrome), !profileExists(profile, inUserDataDir: dir) {
+            log("ERROR: profile \"\(profile)\" not found in \(dir); refusing to create it. Opening in the browser's current profile — fix ~/.config/usher/config (run ./list-profiles.sh)")
+            effectiveProfile = nil
+        }
+        openInBrowser(profile: effectiveProfile, url: url, browserPath: chrome)
     }
 }
 
